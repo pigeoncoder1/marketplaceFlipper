@@ -156,8 +156,6 @@ while True:
                     writer.writerows(new_rows)
 
                 print(f"[✅] Added {len(new_rows)} new listings to {CSV_FILE}")
-        else:
-            print("[ℹ️] No new listings found.")
 
     except Exception as e:
         print("[❌] Failed to parse response:", e)
