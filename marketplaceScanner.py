@@ -3,11 +3,7 @@ import json
 import csv
 import os
 import time
-from openai import OpenAI
-client = OpenAI(api_key="sk-proj-e0uiUn0xUEIT2bMAwJZMT3BlbkFJJ342ylsoOlPmV7ph8N0Z")
-pastMessages = [
-    {"role":"system","content": "You are an experienced bike reseller, you will process images and information and tell me whether it is worth buying. The format that you'll answer with is: QUICK BUY - if you think that the bike is a complete steal, BUY - if you think the bike is worth reselling, NO - if you think the bike is not worth reselling "}
-]
+from AIAnalyser import evaluateListing
 
 CSV_FILE = "bikeDeals.csv"
 
@@ -136,22 +132,20 @@ while True:
             image_url = listing.get("primary_listing_photo", {}).get("image", {}).get("uri", "N/A")
             post_url = f"https://www.facebook.com/marketplace/item/{story_key}" if story_key else "N/A"
 
-            # Print to terminal
-            print(f"🆕 New Listing: {title}")
-            print(f"💷 {price} | 📍 {location}")
-            print(f"🔗 {post_url}")
-            print(f"🖼️  {image_url}\n{'-'*60}")
 
             new_rows.append({
                 "ID": story_key,
                 "Title": title,
                 "Price": price,
                 "Location": location,
-                "Image URL": image_url,
                 "Post URL": post_url
             })
 
         if new_rows:
+            result = evaluateListing(
+                title,price,location,image_url,post_url
+            )
+            print(result)
             file_exists = os.path.exists(CSV_FILE)
             with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(f, fieldnames=["ID", "Title", "Price", "Location", "Image URL", "Post URL"])
@@ -167,4 +161,4 @@ while True:
         print("[❌] Failed to parse response:", e)
         print(response.text)
     print("scan completed")
-    time.sleep(60) # every minute
+    time.sleep(4) # every minute
