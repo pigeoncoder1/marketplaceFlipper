@@ -4,6 +4,7 @@ import csv
 import os
 import time
 from AIAnalyser import evaluateListing
+from telegramBot import sendMessage
 
 CSV_FILE = "bikeDeals.csv"
 
@@ -51,7 +52,7 @@ variables = {
         "longitude": 0.4693
     },
     "contextual_data": None,
-    "count": 24,
+    "count": 4,
     "cursor": None,
     "params": {
         "bqf": {
@@ -116,7 +117,7 @@ while True:
     try:
         results = response.json()
         listings = results["data"]["marketplace_search"]["feed_units"]["edges"]
-
+        listings = listings[:4]
         new_rows = []
         for item in listings:
             node = item["node"]
@@ -145,15 +146,16 @@ while True:
             result = evaluateListing(
                 title,price,location,image_url,post_url
             )
-            print(result)
-            file_exists = os.path.exists(CSV_FILE)
-            with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as f:
-                writer = csv.DictWriter(f, fieldnames=["ID", "Title", "Price", "Location", "Image URL", "Post URL"])
-                if not file_exists:
-                    writer.writeheader()
-                writer.writerows(new_rows)
+            if "[YES]" in result:
+                sendMessage(post_url)
+                file_exists = os.path.exists(CSV_FILE)
+                with open(CSV_FILE, mode="a", newline="", encoding="utf-8") as f:
+                    writer = csv.DictWriter(f, fieldnames=["ID", "Title", "Price", "Location", "Image URL", "Post URL"])
+                    if not file_exists:
+                        writer.writeheader()
+                    writer.writerows(new_rows)
 
-            print(f"[✅] Added {len(new_rows)} new listings to {CSV_FILE}")
+                print(f"[✅] Added {len(new_rows)} new listings to {CSV_FILE}")
         else:
             print("[ℹ️] No new listings found.")
 
@@ -161,4 +163,4 @@ while True:
         print("[❌] Failed to parse response:", e)
         print(response.text)
     print("scan completed")
-    time.sleep(30) # every minute
+    time.sleep(600) # every 10 minute
