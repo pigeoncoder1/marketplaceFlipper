@@ -161,4 +161,4 @@ while True:
         print("[❌] Failed to parse response:", e)
         print(response.text)
     print("scan completed")
-    time.sleep(4) # every minute
+    time.sleep(30) # every minute
