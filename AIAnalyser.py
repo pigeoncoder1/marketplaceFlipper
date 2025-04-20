@@ -1,12 +1,12 @@
 from email.mime import image
 from openai import OpenAI
 from telegramBot import sendMessage
-client = OpenAI(api_key="sk-proj-e0uiUn0xUEIT2bMAwJZMT3BlbkFJJ342ylsoOlPmV7ph8N0Z")
+client = OpenAI(api_key="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")
 
 def evaluateListing(title, price, location, image_url, post_url):
     prompt = f"""
             You are an expert Facebook Marketplace bike flipper.
-    Your goal is to find undervalued bikes that can be realistically flipped for £50+ profit with minimal effort — such as cleaning, adjusting gears, or fixing a puncture.
+    Your goal is to find undervalued bikes that can be realistically flipped for £70+ profit with minimal effort — such as cleaning, adjusting gears, or fixing a puncture.
     You know how to spot valuable models, reliable components (Shimano, SRAM, hydraulic brakes, alloy or carbon frames), and reputable brands (Carrera, Boardman, Trek, Giant, etc.).
     ❗ Mark [YES] only if:
     The bike is priced well below market for its condition and brand.
